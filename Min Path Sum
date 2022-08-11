@@ -1,0 +1,97 @@
+Recursion : TLE
+
+class Solution:
+    def solve(self,i,j,a):
+        if i==0 and j==0:
+            return a[0][0]
+        if i<0 or j<0:
+            return 1000000000000
+        up=a[i][j]+self.solve(i-1,j,a)
+        down=a[i][j]+self.solve(i,j-1,a)
+        return min(up,down)
+    
+    def minPathSum(self, grid: List[List[int]]) -> int:
+        m=len(grid)
+        n=len(grid[0])
+        return self.solve(m-1,n-1,grid)
+        
+ 
+Memoization : Accepted
+
+class Solution:
+    def solve(self,i,j,a,dp):
+        if i==0 and j==0:
+            return a[0][0]
+        if i<0 or j<0:
+            return 1000000000000
+        if dp[i][j]!=-1:
+            return dp[i][j]
+        
+        up = a[i][j] + self.solve(i-1,j,a,dp)
+        down = a[i][j] + self.solve(i,j-1,a,dp)
+        dp[i][j] = min(up,down)
+        return dp[i][j]
+    
+    def minPathSum(self, grid: List[List[int]]) -> int:
+        m=len(grid)
+        n=len(grid[0])
+        dp=[[-1 for i in range(n)] for j in range(m)]
+        return self.solve(m-1,n-1,grid,dp)
+        
+        
+Dynamic Programming(tabulation): Accepted
+
+class Solution:
+	    def minPathSum(self, grid: List[List[int]]) -> int:
+        m=len(grid)
+        n=len(grid[0])
+        dp=[[-1 for i in range(n)] for j in range(m)]
+        for i in range(m):
+            for j in range(n):
+                if i==0 and j==0:
+                    dp[0][0]=grid[0][0]
+                else:
+                    up=grid[i][j]
+                    if i>0:
+                        up+=dp[i-1][j]
+                    else:
+                        up+=10000000000000
+                        
+                    left=grid[i][j]
+                    if j>0:
+                        left+=dp[i][j-1]
+                    else:
+                        left+=10000000000000
+                        
+                    dp[i][j]=min(up,left)
+                    
+        return dp[m-1][n-1]
+        
+        
+Space Optimization O(N)+O(N)
+
+    def minPathSum(self, grid: List[List[int]]) -> int:
+        n=len(grid[0])
+        prev=[-1]*n
+        for i in range(m):
+            curr=[-1]*n
+            for j in range(n):
+                if i==0 and j==0:
+                    curr[0]=grid[0][0]
+                else:
+                    up=grid[i][j]
+                    if i>0:
+                        up+=prev[j]
+                    else:
+                        up+=10000000000000
+                        
+                    left=grid[i][j]
+                    if j>0:
+                        left+=curr[j-1]
+                    else:
+                        left+=10000000000000
+                        
+                    curr[j]=min(up,left)
+            prev=curr
+                    
+        return prev[n-1]
