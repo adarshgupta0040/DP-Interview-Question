@@ -1,0 +1,58 @@
+# Recursion :
+
+class Solution:
+    def f(self,ind,T,coins):
+        if ind==0:
+            return T%coins[0]==0
+        Nottake=self.f(ind-1,T,coins)
+        take=0
+        if coins[ind]<=T:
+            take=self.f(ind,T-coins[ind],coins)
+        return Nottake+take
+        
+    def change(self, amount: int, coins: List[int]) -> int:
+        return self.f(len(coins)-1,amount,coins)
+        
+        
+# Memoisation :
+
+class Solution:
+    def f(self,ind,T,coins,dp):
+        if ind==0:
+            if T%coins[0]==0:
+                return 1
+            return 0
+        if dp[ind][T]!=-1:
+            return dp[ind][T]
+        Nottake=self.f(ind-1,T,coins,dp)
+        take=0
+        if coins[ind]<=T:
+            take=self.f(ind,T-coins[ind],coins,dp)
+        dp[ind][T]= Nottake+take
+        return dp[ind][T]
+        
+    def change(self, amount: int, coins: List[int]) -> int:
+        dp=[[-1 for i in range(amount+1)]for j in range(len(coins))]
+        return self.f(len(coins)-1,amount,coins,dp)
+        
+        
+# Tabulation :
+
+    def change(self, amount: int, coins: List[int]) -> int:
+        n=len(coins)
+        dp=[[0 for i in range(amount+1)]for j in range(len(coins))]
+        
+        for T in range(amount+1):
+            dp[0][T] = (T%coins[0]==0)
+        for ind in range(1,len(coins)):
+            for T in range(amount+1):
+                Nottake=dp[ind-1][T]
+                take=0
+                if coins[ind]<=T:
+                    take=dp[ind][T-coins[ind]]
+                dp[ind][T]= Nottake+take
+                
+        return dp[-1][-1] 
+        
+**************************************************************************************************************************************************************
+
